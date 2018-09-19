@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FlickrGallery</string>
+    <string name="width_height">Width: %1$s Height: %2$s</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
