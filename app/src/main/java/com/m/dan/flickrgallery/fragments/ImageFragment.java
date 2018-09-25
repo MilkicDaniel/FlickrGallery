@@ -33,18 +33,19 @@ public class ImageFragment extends Fragment {
         Bundle bundle = getArguments();
         Photo photo = bundle.getParcelable(BUNDLE_PHOTO);
 
-        if (photo.getUrl() != null) {
 
+        if(photo.getTitle().equals(""))
+            title.setText(getString(R.string.unnamed_title));
+        else
             title.setText(photo.getTitle());
-            info.setText(getString(R.string.width_height, photo.getWidth(), photo.getHeight()));
 
+        if (photo.getUrl() != null) {
+            info.setText(getString(R.string.width_height, photo.getWidth(), photo.getHeight()));
             Picasso.get().load(photo.getUrl()).fit().centerInside()
                     .into(image);
         } else {
             // in case flickr is missing the original image for some reason.
-            title.setText(photo.getTitle());
             info.setText(getString(R.string.width_height, "Unknown", "Unknown"));
-
             Picasso.get().load(photo.getThumbnailUrl()).fit().centerInside()
                     .into(image);
         }

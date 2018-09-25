@@ -1,8 +1,10 @@
-package com.m.dan.flickrgallery;
+package com.m.dan.flickrgallery.activities;
 
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.m.dan.flickrgallery.R;
 import com.m.dan.flickrgallery.fragments.GalleryFragment;
 
 public class MainActivity extends AppCompatActivity {

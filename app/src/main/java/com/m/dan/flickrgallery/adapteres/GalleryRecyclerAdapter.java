@@ -1,7 +1,7 @@
 package com.m.dan.flickrgallery.adapteres;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.m.dan.flickrgallery.MainActivity;
+import com.m.dan.flickrgallery.activities.MainActivity;
 import com.m.dan.flickrgallery.R;
-import com.m.dan.flickrgallery.fragments.ImageFragment;
 import com.m.dan.flickrgallery.models.Photo;
+import com.m.dan.flickrgallery.viewModel.GalleryViewModel;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
@@ -20,10 +20,13 @@ public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecycler
 
     private Context context;
     private ArrayList<Photo> photos;
+    private GalleryViewModel model;
 
     public GalleryRecyclerAdapter(Context context, ArrayList<Photo> photos) {
         this.context = context;
         this.photos = photos;
+        model = ViewModelProviders.of((MainActivity)context).get(GalleryViewModel.class);
+
     }
 
     @NonNull
@@ -36,25 +39,24 @@ public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecycler
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int position) {
 
         final Photo photo = photos.get(position);
 
-        Picasso.get().load(photo.getThumbnailUrl()).fit().centerCrop()
-                .into(viewHolder.image);
-        viewHolder.info.setText(photo.getTitle());
+        Picasso.get().load(photo.getThumbnailUrl()).fit().centerCrop().into(viewHolder.image);
+
+
+        if(photo.getTitle().equals(""))
+            viewHolder.info.setText(context.getString(R.string.unnamed_title));
+        else
+            viewHolder.info.setText(photo.getTitle());
+
+        model.getMorePhotos(position);
 
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ImageFragment imageFragment = new ImageFragment();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(ImageFragment.BUNDLE_PHOTO, photo);
-                imageFragment.setArguments(bundle);
-
-                ((MainActivity) context).getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.overlay_container, imageFragment).addToBackStack(null).commit();
+                model.openFullscreenPhoto(context, viewHolder.getAdapterPosition());
             }
         });
 
